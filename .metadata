@@ -1,0 +1,10 @@
+# This file tracks properties of this Flutter project.
+# Used by Flutter tool to assess capabilities and perform upgrades etc.
+#
+# This file should be version controlled and should not be manually edited.
+
+version:
+  revision: 1663b8dc530c59817db10b54c09bc7d5801d2330
+  channel: gesture-transformable-2
+
+project_type: app
