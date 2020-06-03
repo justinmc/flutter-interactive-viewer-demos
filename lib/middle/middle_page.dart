@@ -13,7 +13,6 @@ class MiddlePage extends StatelessWidget {
             child: InteractiveViewer(
               boundaryMargin: const EdgeInsets.all(10.0),
               minScale: 0.8,
-              disableRotation: true,
               child: Container(width: 200.0, height: 200.0, color: Colors.red),
             ),
           ),

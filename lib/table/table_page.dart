@@ -10,7 +10,7 @@ class TablePage extends StatefulWidget {
 }
 
 class _TablePageState extends State<TablePage> {
-  final ValueNotifier<Matrix4> _transformationController = ValueNotifier<Matrix4>(Matrix4.identity());
+  final TransformationController _transformationController = TransformationController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,42 +18,6 @@ class _TablePageState extends State<TablePage> {
       appBar: AppBar(
         title: const Text('Scrollable Table'),
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.help),
-            tooltip: 'Help',
-            onPressed: () {
-              showDialog<Column>(
-                context: context,
-                builder: (BuildContext context) => instructionDialog,
-              );
-            },
-          ),
-        ],
-      ),
-      body: GestureDetector(
-        onTapUp: (TapUpDetails details) {
-          final Offset position = InteractiveViewer.fromViewport(
-            details.localPosition,
-            _transformationController.value,
-          );
-          print('justin tapup at $position');
-        },
-        child: InteractiveViewer(
-          transformationController: _transformationController,
-          /*
-          boundaryMargin: const EdgeInsets.fromLTRB(
-            double.infinity,
-            double.infinity,
-            double.infinity,
-            double.infinity,
-          ),
-          */
-          disableRotation: true,
-          disableScale: true,
-          child: _getTable(30, 3),
-        ),
-      ),
-          /*
           Draggable(
             feedback: Container(
               width: 50,
@@ -66,7 +30,30 @@ class _TablePageState extends State<TablePage> {
               color: Colors.purple.withOpacity(0.5),
             ),
           ),
+        ],
+      ),
+      body: GestureDetector(
+        onTapUp: (TapUpDetails details) {
+          final Offset position = _transformationController.toScene(
+            details.localPosition,
+          );
+          print('justin tapup at $position');
+        },
+        child: InteractiveViewer(
+          constrained: false,
+          transformationController: _transformationController,
+          /*
+          boundaryMargin: const EdgeInsets.fromLTRB(
+            double.infinity,
+            double.infinity,
+            double.infinity,
+            double.infinity,
+          ),
           */
+          scaleEnabled: false,
+          child: _getTable(30, 3),
+        ),
+      ),
     );
   }
 

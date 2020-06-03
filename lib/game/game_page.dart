@@ -30,16 +30,15 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     hexagonMargin: _kHexagonMargin,
   );
 
+  bool _firstRender = true;
   Matrix4 _homeTransformation;
-  final ValueNotifier<Matrix4> _transformationController = ValueNotifier<Matrix4>(null);
+  final TransformationController _transformationController = TransformationController();
   Animation<Matrix4> _animationReset;
   AnimationController _controllerReset;
 
   // Handle reset to home transform animation.
   void _onAnimateReset() {
-    setState(() {
-      _transformationController.value = _animationReset.value;
-    });
+    _transformationController.value = _animationReset.value;
     if (!_controllerReset.isAnimating) {
       _animationReset?.removeListener(_onAnimateReset);
       _animationReset = null;
@@ -68,7 +67,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   }
 
   void _onScaleStart(ScaleStartDetails details) {
-    print('justin onscalestart outer');
     // If the user tries to cause a transformation while the reset animation is
     // running, cancel the reset animation.
     if (_controllerReset.status == AnimationStatus.forward) {
@@ -77,10 +75,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   }
 
   void _onTapUp(TapUpDetails details) {
-    final Offset scenePoint = InteractiveViewer.fromViewport(
-      details.localPosition,
-      _transformationController.value,
-    );
+    final Offset scenePoint = _transformationController.toScene(details.localPosition);
     final BoardPoint boardPoint = _board.pointToBoardPoint(scenePoint);
     setState(() {
       _board = _board.copyWithSelected(boardPoint);
@@ -101,17 +96,13 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final _BoardPainter painter = _BoardPainter(
-      board: _board,
-    );
-
     // The scene is drawn by a CustomPaint, but user interaction is handled by
     // the InteractiveViewer parent widget.
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text('Game Board demo'),
+        actions: <Widget>[resetButton],
       ),
       body: Container(
         color: backgroundColor,
@@ -127,7 +118,8 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             // The board is drawn centered at the origin, which is the top left
             // corner in InteractiveViewer, so shift it to the center of the
             // viewport initially.
-            if (_transformationController.value == null) {
+            if (_firstRender) {
+              _firstRender = false;
               _homeTransformation = Matrix4.identity()..translate(
                 viewportSize.width / 2,
                 viewportSize.height / 2,
@@ -136,20 +128,22 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               _transformationController.value = _homeTransformation;
             }
 
+            // TODO(justinmc): There is a bug where the scale gesture doesn't
+            // begin immediately, and it's caused by wrapping IV in a
+            // GestureDetector. Removing the onTapUp fixes it.
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onScaleStart: _onScaleStart,
               onTapUp: _onTapUp,
               child: InteractiveViewer(
-                disableRotation: true,
                 transformationController: _transformationController,
                 boundaryMargin: EdgeInsets.fromLTRB(
                   _board.size.width / 2,
                   _board.size.height / 2,
-                  -_board.size.width / 2,
-                  -_board.size.height / 2,
+                  _board.size.width / 4 - 70.0,
+                  -180.0,
                 ),
                 minScale: 0.1,
+                onInteractionStart: _onScaleStart,
                 child: CustomPaint(
                   size: _board.size,
                   painter: _BoardPainter(
@@ -166,7 +160,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           },
         ),
       ),
-      persistentFooterButtons: [resetButton, editButton],
+      //persistentFooterButtons: [resetButton, editButton],
     );
   }
 

@@ -85,7 +85,6 @@ class _JumpPageState extends State<JumpPage> {
                         child: ClipRect(
                             child: InteractiveViewer(
                               maxScale: 10,
-                              disableRotation: true,
                               child: Stack(children:
                               [Image.asset('images/board1500.png', fit:BoxFit.cover),
                                 positionedLetter(7,7, letterSize, 'A'),

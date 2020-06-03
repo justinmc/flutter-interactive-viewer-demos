@@ -12,7 +12,7 @@ class ControllerPage extends StatefulWidget {
 }
 
 class _ControllerPageState extends State<ControllerPage> with TickerProviderStateMixin {
-  final ValueNotifier<Matrix4> _transformationController = ValueNotifier<Matrix4>(Matrix4.identity());
+  final TransformationController _transformationController = TransformationController();
   Animation<Matrix4> _animationReset;
   AnimationController _controllerReset;
 
@@ -70,15 +70,24 @@ class _ControllerPageState extends State<ControllerPage> with TickerProviderStat
         title: const Text('Controller demo'),
       ),
       body: Center(
-        child: InteractiveViewer(
-          disableRotation: true,
-          boundaryMargin: EdgeInsets.all(double.infinity),
-          transformationController: _transformationController,
-          minScale: 0.1,
-          maxScale: 1.0,
-          onScaleStart: _onScaleStart,
-          child: Container(
-            color: Colors.pink,
+        child: Container(
+          color: Colors.limeAccent,
+          child: InteractiveViewer(
+            boundaryMargin: EdgeInsets.all(double.infinity),
+            transformationController: _transformationController,
+            minScale: 0.1,
+            maxScale: 1.0,
+            onInteractionStart: _onScaleStart,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[Colors.orange, Colors.red],
+                  stops: <double>[0.0, 1.0],
+                )
+              ),
+            ),
           ),
         ),
       ),

@@ -63,7 +63,7 @@ class GridDemoPhotoItem extends StatelessWidget {
   final Photo photo;
   final GridDemoTileStyle tileStyle;
   final BannerTapCallback onBannerTap; // User taps on the photo's header or footer.
-  final ValueNotifier<Matrix4> _transformationController = ValueNotifier<Matrix4>(Matrix4.identity());
+  final TransformationController _transformationController = TransformationController();
 
   void showPhoto(BuildContext context) {
     Navigator.push(context, MaterialPageRoute<void>(
@@ -78,15 +78,14 @@ class GridDemoPhotoItem extends StatelessWidget {
             // TODO(justinmc): Try doing double tap to zoom.
             child: GestureDetector(
               onTapUp: (TapUpDetails details) {
-                final Offset position = InteractiveViewer.fromViewport(
+                final Offset position = _transformationController.toScene(
                   details.localPosition,
-                  _transformationController.value,
                 );
                 print('justin tapup at $position');
               },
               child: InteractiveViewer(
+                panEnabled: false,
                 transformationController: _transformationController,
-                disableRotation: true,
                 child: Center(
                   child: Image.asset(
                     photo.assetName,

@@ -5,6 +5,7 @@ import 'image/image_page.dart';
 import 'table/table_page.dart';
 import 'jump/jump_page.dart';
 import 'middle/middle_page.dart';
+import 'childSize/child_size.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/table': (BuildContext context) => TablePage(),
         '/jump': (BuildContext context) => JumpPage(),
         '/middle': (BuildContext context) => MiddlePage(),
+        '/child_size': (BuildContext context) => ChildSizePage(),
         '/controller': (BuildContext context) => ControllerPage(),
       },
     );
@@ -70,6 +72,11 @@ class MyHomePage extends StatelessWidget {
             route: '/controller',
             subtitle: 'Demonstrates using the controller to reset',
             title: 'Controller Demo',
+          ),
+          MyListItem(
+            route: '/child_size',
+            subtitle: 'Trying out a child whose min size is bigger than viewport, but whose max size is even bigger yet.',
+            title: 'Child Size',
           ),
         ],
       ),
