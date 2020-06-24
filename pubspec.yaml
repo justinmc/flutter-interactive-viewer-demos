@@ -46,6 +46,7 @@ flutter:
 
   assets:
     - images/india_chennai_flower_market.png
+    - images/tall.jpg
     - images/board1500.png
     - images/letter.png
 

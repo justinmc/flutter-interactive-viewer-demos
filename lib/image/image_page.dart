@@ -73,6 +73,14 @@ class GridDemoPhotoItem extends StatelessWidget {
           appBar: AppBar(
             title: Text(photo.title),
           ),
+          /*
+          body: Image.asset(
+            photo.assetName,
+            alignment: Alignment.center,
+            fit: BoxFit.fill,
+            package: photo.assetPackage,
+          ),
+          */
           body: Hero(
             tag: photo.tag,
             // TODO(justinmc): Try doing double tap to zoom.
@@ -84,12 +92,18 @@ class GridDemoPhotoItem extends StatelessWidget {
                 print('justin tapup at $position');
               },
               child: InteractiveViewer(
-                panEnabled: false,
+                constrained: true,
+                scaleEnabled: false,
+                /*
+                minScale: 1,
+                maxScale: 1,
+                */
+                //panEnabled: false,
                 transformationController: _transformationController,
                 child: Center(
                   child: Image.asset(
                     photo.assetName,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                     package: photo.assetPackage,
                   ),
                 ),
@@ -177,6 +191,11 @@ class ImagePageState extends State<ImagePage> {
       assetName: 'images/india_chennai_flower_market.png',
       title: 'Chennai',
       caption: 'Flower Market',
+    ),
+    Photo(
+      assetName: 'images/tall.jpg',
+      title: 'Tall',
+      caption: 'Image taller than the screen',
     ),
   ];
 
