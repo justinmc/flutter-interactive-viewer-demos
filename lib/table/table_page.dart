@@ -16,8 +16,9 @@ class _TablePageState extends State<TablePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scrollable Table'),
+        title: const Text('MyTable'),
         actions: <Widget>[
+          /*
           Draggable(
             feedback: Container(
               width: 50,
@@ -30,6 +31,7 @@ class _TablePageState extends State<TablePage> {
               color: Colors.purple.withOpacity(0.5),
             ),
           ),
+          */
         ],
       ),
       body: GestureDetector(
@@ -51,7 +53,22 @@ class _TablePageState extends State<TablePage> {
           ),
           */
           scaleEnabled: false,
-          child: _getTable(30, 3),
+          child: _getTable(60, 6),
+          /*
+          child: Center(
+            child: Container(
+              width: 300,
+              height: 75,
+              color: Colors.grey.withOpacity(0.1),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Type here',
+                ),
+                maxLength: 30,
+              ),
+            ),
+          ),
+          */
         ),
       ),
     );
@@ -62,7 +79,7 @@ class _TablePageState extends State<TablePage> {
       // ignore: prefer_const_literals_to_create_immutables
       columnWidths: <int, TableColumnWidth>{
         for (int column = 0; column < columnCount; column++)
-          column: const FixedColumnWidth(300.0),
+          column: const FixedColumnWidth(200.0),
       },
       // ignore: prefer_const_literals_to_create_immutables
       children: <TableRow>[
@@ -75,8 +92,9 @@ class _TablePageState extends State<TablePage> {
                 DragTarget(
                   builder: (BuildContext context, List candidateData, List rejectedData) {
                     return Container(
-                      height: 100,
-                      color: candidateData.isEmpty ? row % 2 + column % 2 == 1 ? Colors.red : Colors.green : Colors.blue,
+                      height: 26,
+                      color: candidateData.isEmpty ? row % 2 + column % 2 == 1 ? Colors.white : Colors.grey.withOpacity(0.1) : Colors.blue,
+                      child: Text('$row x $column'),
                     );
                   },
                 ),

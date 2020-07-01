@@ -93,7 +93,6 @@ class GridDemoPhotoItem extends StatelessWidget {
               },
               child: InteractiveViewer(
                 constrained: true,
-                scaleEnabled: false,
                 /*
                 minScale: 1,
                 maxScale: 1,
@@ -210,7 +209,7 @@ class ImagePageState extends State<ImagePage> {
     final Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Grid list'),
+        title: const Text('Photos'),
         actions: <Widget>[
           PopupMenuButton<GridDemoTileStyle>(
             onSelected: changeTileStyle,

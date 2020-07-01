@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:ui' show Vertices;
+import 'dart:ui' as ui;
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'transformations_demo_board.dart';
 import 'transformations_demo_edit_board_point.dart';
@@ -30,6 +31,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     hexagonMargin: _kHexagonMargin,
   );
 
+  double _scale = 1.0;
   bool _firstRender = true;
   Matrix4 _homeTransformation;
   final TransformationController _transformationController = TransformationController();
@@ -82,11 +84,21 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     });
   }
 
+  void _onTransformationChange() {
+    final double currentScale = _transformationController.value.getMaxScaleOnAxis();
+    if (currentScale != _scale) {
+      setState(() {
+        _scale = currentScale;
+      });
+    }
+  }
+
   void initState() {
     super.initState();
     _controllerReset = AnimationController(
       vsync: this,
     );
+    _transformationController.addListener(_onTransformationChange);
   }
 
   @override
@@ -101,7 +113,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        title: const Text('Game Board demo'),
+        title: const Text('MyGameBoard'),
         actions: <Widget>[resetButton],
       ),
       body: Container(
@@ -136,18 +148,20 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               onTapUp: _onTapUp,
               child: InteractiveViewer(
                 transformationController: _transformationController,
+                //boundaryMargin: EdgeInsets.all(500.0),
                 boundaryMargin: EdgeInsets.fromLTRB(
-                  _board.size.width / 2,
-                  _board.size.height / 2,
-                  _board.size.width / 4 - 70.0,
-                  -180.0,
+                  _board.size.width * 2,
+                  _board.size.height * .75,
+                  _board.size.width / 4,
+                  _board.size.height * 4,
                 ),
-                minScale: 0.1,
+                minScale: 0.01,
                 onInteractionStart: _onScaleStart,
                 child: CustomPaint(
                   size: _board.size,
                   painter: _BoardPainter(
                     board: _board,
+                    showDetail: _scale > 1.5,
                   ),
                   // This child gives the CustomPaint an intrinsic size.
                   child: SizedBox(
@@ -212,6 +226,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _controllerReset.dispose();
+    _transformationController.removeListener(_onTransformationChange);
     super.dispose();
   }
 }
@@ -221,19 +236,90 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
 class _BoardPainter extends CustomPainter {
   const _BoardPainter({
     this.board,
+    this.showDetail,
   });
 
+  final bool showDetail;
   final Board board;
 
   @override
   void paint(Canvas canvas, Size size) {
     void drawBoardPoint(BoardPoint boardPoint) {
+      /*
       final Color color = boardPoint.color.withOpacity(
         board.selected == boardPoint ? 0.7 : 1,
       );
-      final Vertices vertices =
+      */
+      final double opacity = showDetail ? 0.8 : 0.5;
+      Color color;
+      if (boardPoint.q < 2) {
+        if (!showDetail) {
+          color = Colors.red.withOpacity(opacity);
+        } else {
+          if (boardPoint.r % 2 == 1) {
+            if (boardPoint.q % 2 == 1) {
+              color = Colors.deepOrangeAccent.withOpacity(opacity);
+            } else {
+              color = Colors.orangeAccent.withOpacity(opacity);
+            }
+          } else {
+            if (boardPoint.q % 2 == 1) {
+              color = Colors.pinkAccent.withOpacity(opacity);
+            } else {
+              color = Colors.pink.withOpacity(opacity);
+            }
+          }
+        }
+      } else {
+        if (!showDetail) {
+          color = Colors.blue.withOpacity(opacity);
+        } else {
+          if (boardPoint.r % 2 == 1) {
+            if (boardPoint.q % 2 == 1) {
+              color = Colors.blueAccent.withOpacity(opacity);
+            } else {
+              color = Colors.blueGrey.withOpacity(opacity);
+            }
+          } else {
+            if (boardPoint.q % 2 == 1) {
+              color = Colors.lightBlue.withOpacity(opacity);
+            } else {
+              color = Colors.lightBlueAccent.withOpacity(opacity);
+            }
+          }
+        }
+      }
+      final ui.Vertices vertices =
           board.getVerticesForBoardPoint(boardPoint, color);
       canvas.drawVertices(vertices, BlendMode.color, Paint());
+
+
+      /*
+      final ui.ParagraphBuilder paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
+        fontSize: 12.0,
+        height: 20.0,
+        maxLines: 1,
+        textAlign: TextAlign.start,
+        textDirection: TextDirection.ltr,
+      ));
+      /*
+      paragraphBuilder.pushStyle(ui.TextStyle(
+        color: Colors.red,
+        fontSize: 12.0,
+        height: 20.0,
+      ));
+      */
+      paragraphBuilder.addText('hello ${boardPoint.q}, ${boardPoint.r}');
+      final ui.Paragraph paragraph = paragraphBuilder.build();
+      final Point<double> textPoint = board.boardPointToPoint(boardPoint);
+      final Offset textOffset = Offset(
+        textPoint.x,
+        textPoint.y,
+      );
+
+      print('justin draw at $textOffset');
+      canvas.drawParagraph(paragraph, textOffset);
+      */
     }
 
     board.forEach(drawBoardPoint);
