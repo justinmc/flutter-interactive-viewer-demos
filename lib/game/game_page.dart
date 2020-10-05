@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:ui' as ui;
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'transformations_demo_board.dart';
 import 'transformations_demo_edit_board_point.dart';
@@ -93,6 +92,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     _controllerReset = AnimationController(
@@ -145,8 +145,12 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             // GestureDetector. Removing the onTapUp fixes it.
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
+              onDoubleTap: () {print('justin double');},
               onTapUp: _onTapUp,
               child: InteractiveViewer(
+                onInteractionUpdate: (ScaleUpdateDetails details) {
+                  //print('justin onInteractionUpdate ${details.scale}');
+                },
                 transformationController: _transformationController,
                 //boundaryMargin: EdgeInsets.all(500.0),
                 boundaryMargin: EdgeInsets.fromLTRB(
@@ -250,7 +254,7 @@ class _BoardPainter extends CustomPainter {
         board.selected == boardPoint ? 0.7 : 1,
       );
       */
-      final double opacity = showDetail ? 0.8 : 0.5;
+      final double opacity = board.selected == boardPoint ? 0.2 : showDetail ? 0.8 : 0.5;
       Color color;
       if (boardPoint.q < 2) {
         if (!showDetail) {

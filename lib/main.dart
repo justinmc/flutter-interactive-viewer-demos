@@ -3,9 +3,12 @@ import 'controller/controller_page.dart';
 import 'game/game_page.dart';
 import 'image/image_page.dart';
 import 'table/table_page.dart';
+import 'rotate/rotate_page.dart';
 import 'jump/jump_page.dart';
 import 'middle/middle_page.dart';
 import 'childSize/child_size.dart';
+import 'childSize/boundary_size_page.dart';
+import 'double_tap/double_tap_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,7 +29,10 @@ class MyApp extends StatelessWidget {
         '/jump': (BuildContext context) => JumpPage(),
         '/middle': (BuildContext context) => MiddlePage(),
         '/child_size': (BuildContext context) => ChildSizePage(),
+        '/boundary_size': (BuildContext context) => BoundarySizePage(),
         '/controller': (BuildContext context) => ControllerPage(),
+        '/rotate': (BuildContext context) => RotatePage(),
+        '/double_tap': (BuildContext context) => DoubleTapPage(),
       },
     );
   }
@@ -43,6 +49,13 @@ class MyHomePage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
+          /*
+          MyListItem(
+            route: '/rotate',
+            subtitle: 'A clearly bounded and sized rotation demo',
+            title: 'Rotation Demo',
+          ),
+          */
           MyListItem(
             route: '/game',
             subtitle: 'The original hexagon grid demo.',
@@ -78,6 +91,18 @@ class MyHomePage extends StatelessWidget {
             subtitle: 'Trying out a child whose min size is bigger than viewport, but whose max size is even bigger yet.',
             title: 'Child Size',
           ),
+          MyListItem(
+            route: '/boundary_size',
+            subtitle: 'A child that\'s smaller than the viewport by default.',
+            title: 'Boundary Size',
+          ),
+          /*
+          MyListItem(
+            route: '/double_tap',
+            subtitle: 'Double tap to zoom.',
+            title: 'Double Tap',
+          ),
+          */
         ],
       ),
     );

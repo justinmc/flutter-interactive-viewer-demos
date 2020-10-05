@@ -18,20 +18,6 @@ class _TablePageState extends State<TablePage> {
       appBar: AppBar(
         title: const Text('MyTable'),
         actions: <Widget>[
-          /*
-          Draggable(
-            feedback: Container(
-              width: 50,
-              height: 50,
-              color: Colors.pink.withOpacity(0.2),
-            ),
-            child: Container(
-              width: 50,
-              height: 50,
-              color: Colors.purple.withOpacity(0.5),
-            ),
-          ),
-          */
         ],
       ),
       body: GestureDetector(
@@ -39,42 +25,57 @@ class _TablePageState extends State<TablePage> {
           final Offset position = _transformationController.toScene(
             details.localPosition,
           );
-          print('justin tapup at $position');
+          print('tapup at $position');
         },
         child: InteractiveViewer(
+          alignPanAxis: true,
           constrained: false,
           transformationController: _transformationController,
-          /*
-          boundaryMargin: const EdgeInsets.fromLTRB(
-            double.infinity,
-            double.infinity,
-            double.infinity,
-            double.infinity,
-          ),
-          */
           scaleEnabled: false,
-          child: _getTable(60, 6),
-          /*
-          child: Center(
-            child: Container(
-              width: 300,
-              height: 75,
-              color: Colors.grey.withOpacity(0.1),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Type here',
-                ),
-                maxLength: 30,
-              ),
-            ),
-          ),
-          */
+          child: _Table(rowCount: 60, columnCount: 6),
         ),
       ),
     );
   }
 
-  static Widget _getTable(int rowCount, int columnCount) {
+  Widget get instructionDialog {
+    return AlertDialog(
+      title: const Text('Bidirectional Scrolling'),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: const <Widget>[
+          Text('Tap to edit hex tiles, and use gestures to move around the scene:\n'),
+          Text('- Drag to pan.'),
+          Text('- Pinch to zoom.'),
+          Text('- Rotate with two fingers.'),
+          Text('\nYou can always press the home button to return to the starting orientation!'),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: const Text('OK'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _Table extends StatelessWidget {
+  const _Table({
+    this.rowCount,
+    this.columnCount,
+  }) : assert(rowCount != null && rowCount > 0),
+       assert(columnCount != null && columnCount > 0);
+
+  final int rowCount;
+  final int columnCount;
+
+  @override
+  Widget build(BuildContext context) {
     return Table(
       // ignore: prefer_const_literals_to_create_immutables
       columnWidths: <int, TableColumnWidth>{
@@ -100,31 +101,6 @@ class _TablePageState extends State<TablePage> {
                 ),
             ],
           ),
-      ],
-    );
-  }
-
-  Widget get instructionDialog {
-    return AlertDialog(
-      title: const Text('Bidirectional Scrolling'),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: const <Widget>[
-          Text('Tap to edit hex tiles, and use gestures to move around the scene:\n'),
-          Text('- Drag to pan.'),
-          Text('- Pinch to zoom.'),
-          Text('- Rotate with two fingers.'),
-          Text('\nYou can always press the home button to return to the starting orientation!'),
-        ],
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: const Text('OK'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
       ],
     );
   }
