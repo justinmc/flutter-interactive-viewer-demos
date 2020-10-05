@@ -45,7 +45,7 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Form Validation Sandbox'),
+        title: Text('InteractiveViewer Demos'),
       ),
       body: ListView(
         children: <Widget>[

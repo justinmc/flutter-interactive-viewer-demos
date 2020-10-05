@@ -95,7 +95,10 @@ class _Table extends StatelessWidget {
                     return Container(
                       height: 26,
                       color: candidateData.isEmpty ? row % 2 + column % 2 == 1 ? Colors.white : Colors.grey.withOpacity(0.1) : Colors.blue,
-                      child: Text('$row x $column'),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('$row x $column'),
+                      ),
                     );
                   },
                 ),
