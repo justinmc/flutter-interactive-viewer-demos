@@ -15,9 +15,7 @@ class BoundarySizePage extends StatelessWidget {
           height: 200.0,
           color: Colors.limeAccent.withOpacity(0.4),
           child: InteractiveViewer(
-            //boundaryMargin: EdgeInsets.all(20),//double.infinity),
-            minScale: 5,
-            maxScale: 5,
+            boundaryMargin: EdgeInsets.all(double.infinity),
             constrained: false,
             child: Center(
               child: Container(

@@ -20,19 +20,25 @@ class _TablePageState extends State<TablePage> {
         actions: <Widget>[
         ],
       ),
-      body: GestureDetector(
-        onTapUp: (TapUpDetails details) {
-          final Offset position = _transformationController.toScene(
-            details.localPosition,
-          );
-          print('tapup at $position');
-        },
-        child: InteractiveViewer(
-          alignPanAxis: true,
-          constrained: false,
-          transformationController: _transformationController,
-          scaleEnabled: false,
-          child: _Table(rowCount: 60, columnCount: 6),
+      body: Center(
+        child: Container(
+          width: 200.0,
+          height: 200.0,
+          child: GestureDetector(
+            onTapUp: (TapUpDetails details) {
+              final Offset position = _transformationController.toScene(
+                details.localPosition,
+              );
+              print('tapup at $position');
+            },
+            child: InteractiveViewer(
+              alignPanAxis: true,
+              constrained: false,
+              transformationController: _transformationController,
+              scaleEnabled: false,
+              child: _Table(rowCount: 60, columnCount: 6),
+            ),
+          ),
         ),
       ),
     );

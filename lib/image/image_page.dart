@@ -93,11 +93,10 @@ class GridDemoPhotoItem extends StatelessWidget {
               },
               child: InteractiveViewer(
                 constrained: true,
-                /*
-                minScale: 1,
-                maxScale: 1,
-                */
+                minScale: 0.000001,
+                maxScale: 1000,
                 //panEnabled: false,
+                boundaryMargin: EdgeInsets.all(double.infinity),
                 transformationController: _transformationController,
                 child: Center(
                   child: Image.asset(

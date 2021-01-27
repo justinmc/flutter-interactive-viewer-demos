@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/gestures.dart';
 import '../helpers.dart';
 
 class RotatePage extends StatefulWidget {
@@ -44,9 +45,12 @@ class _RotatePageState extends State<RotatePage> {
               },
               child: InteractiveViewer(
                 transformationController: _transformationController,
-                boundaryMargin: const EdgeInsets.all(1000),
+                boundaryMargin: const EdgeInsets.all(0),
                 minScale: 0.0001,
                 maxScale: 10000,
+                onInteractionUpdate: (ScaleUpdateDetails details) {
+                  //print('justin onInteractionUpdate ${details.scale}');
+                },
                 child: Container(color: Colors.black, child: getFlex()),
               ),
             ),

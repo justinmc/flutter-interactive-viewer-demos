@@ -9,6 +9,7 @@ import 'middle/middle_page.dart';
 import 'childSize/child_size.dart';
 import 'childSize/boundary_size_page.dart';
 import 'double_tap/double_tap_page.dart';
+import 'builder_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/boundary_size': (BuildContext context) => BoundarySizePage(),
         '/controller': (BuildContext context) => ControllerPage(),
         '/rotate': (BuildContext context) => RotatePage(),
-        '/double_tap': (BuildContext context) => DoubleTapPage(),
+        '/builder': (BuildContext context) => BuilderPage(),
       },
     );
   }
@@ -49,13 +50,16 @@ class MyHomePage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          /*
+          MyListItem(
+            route: '/builder',
+            title: 'Builder Example',
+            subtitle: 'Dynamically generating the visible part of a table',
+          ),
           MyListItem(
             route: '/rotate',
             subtitle: 'A clearly bounded and sized rotation demo',
             title: 'Rotation Demo',
           ),
-          */
           MyListItem(
             route: '/game',
             subtitle: 'The original hexagon grid demo.',

@@ -297,7 +297,6 @@ class _BoardPainter extends CustomPainter {
           board.getVerticesForBoardPoint(boardPoint, color);
       canvas.drawVertices(vertices, BlendMode.color, Paint());
 
-
       /*
       final ui.ParagraphBuilder paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
         fontSize: 12.0,
