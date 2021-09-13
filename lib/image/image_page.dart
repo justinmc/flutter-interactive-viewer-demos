@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/rendering.dart';
 
 enum GridDemoTileStyle {
   imageOnly,
@@ -91,18 +93,37 @@ class GridDemoPhotoItem extends StatelessWidget {
                 );
                 print('justin tapup at $position');
               },
-              child: InteractiveViewer(
-                constrained: true,
-                minScale: 0.000001,
-                maxScale: 1000,
-                //panEnabled: false,
-                boundaryMargin: EdgeInsets.all(double.infinity),
-                transformationController: _transformationController,
-                child: Center(
-                  child: Image.asset(
-                    photo.assetName,
-                    fit: BoxFit.fill,
-                    package: photo.assetPackage,
+              child: IntrinsicSize(
+                shrinkVerticalSize: true,
+                shrinkHorizontalSize: true,
+                child: InteractiveViewer(
+                  constrained: true,
+                  minScale: 0.000001,
+                  maxScale: 1000,
+                  //panEnabled: false,
+                  //boundaryMargin: EdgeInsets.all(double.infinity),
+                  transformationController: _transformationController,
+                  child: Center(
+                    child: Image.asset(
+                      photo.assetName,
+                      //fit: BoxFit.fill,
+                      width: 200,
+                      height: 200,
+                      package: photo.assetPackage,
+                    ),
+                      /*
+                    child: IntrinsicSize(
+                      shrinkVerticalSize: true,
+                      shrinkHorizontalSize: true,
+                      child: Image.asset(
+                        photo.assetName,
+                        //fit: BoxFit.fill,
+                        width: 200,
+                        height: 200,
+                        package: photo.assetPackage,
+                      ),
+                    ),
+                    */
                   ),
                 ),
               ),
@@ -258,5 +279,119 @@ class ImagePageState extends State<ImagePage> {
         ],
       ),
     );
+  }
+}
+
+class IntrinsicSize extends SingleChildRenderObjectWidget {
+  IntrinsicSize({
+    Key key,
+    @required this.shrinkHorizontalSize,
+    @required this.shrinkVerticalSize,
+    Widget child,
+  })  : assert(shrinkHorizontalSize != null),
+        assert(shrinkVerticalSize != null),
+        super(key: key, child: child);
+
+  final bool shrinkHorizontalSize;
+  final bool shrinkVerticalSize;
+
+  @override
+  RenderIntrinsicSize createRenderObject(BuildContext context) =>
+      RenderIntrinsicSize(
+        shrinkHorizontalSize: shrinkHorizontalSize,
+        shrinkVerticalSize: shrinkVerticalSize,
+      );
+}
+
+class RenderIntrinsicSize extends RenderProxyBox {
+  /// Creates a render object that sizes itself to its child's intrinsic height.
+  RenderIntrinsicSize({
+    this.shrinkHorizontalSize,
+    this.shrinkVerticalSize,
+  });
+
+  final bool shrinkHorizontalSize;
+  final bool shrinkVerticalSize;
+
+  @override
+  double computeMinIntrinsicWidth(double height) {
+    if (child == null) return 0.0;
+    if (shrinkHorizontalSize) return computeMaxIntrinsicWidth(height);
+    return child.getMinIntrinsicWidth(height);
+  }
+
+  @override
+  double computeMaxIntrinsicWidth(double height) {
+    if (child == null) return 0.0;
+    return child.getMaxIntrinsicWidth(height).ceil().toDouble();
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) {
+    if (child == null) return 0.0;
+    if (shrinkVerticalSize) return computeMaxIntrinsicHeight(width);
+    return child.getMinIntrinsicHeight(width);
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(double width) {
+    if (child == null) return 0.0;
+    return child.getMaxIntrinsicHeight(width).ceil().toDouble();
+  }
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    assert(
+      debugCannotComputeDryLayout(
+        reason: '$runtimeType does not implement computeDryLayout.',
+      ),
+    );
+    return Size.zero;
+  }
+
+  @override
+  void performLayout() {
+    if (child != null && (shrinkVerticalSize || shrinkHorizontalSize)) {
+      // Viewports cannot be requested for intrinsic sizes.
+      final hasViewportChild = _hasViewportChild();
+
+      final childConstraints = constraints;
+      var width = childConstraints.maxWidth;
+      if (shrinkHorizontalSize && !hasViewportChild) {
+        width = child
+            .getMaxIntrinsicWidth(childConstraints.maxHeight)
+            .ceil()
+            .toDouble();
+        assert(width.isFinite);
+        width = width.clamp(0, childConstraints.maxWidth).toDouble();
+      }
+
+      var height = childConstraints.maxHeight;
+      if (shrinkVerticalSize && !hasViewportChild) {
+        height = child.getMaxIntrinsicHeight(width).ceil().toDouble();
+        assert(height.isFinite);
+        height = height.clamp(0, childConstraints.maxHeight).toDouble();
+      }
+
+      child.layout(childConstraints);
+      size = Size(width, height);
+    } else {
+      size = computeSizeForNoChild(constraints);
+    }
+  }
+
+  bool _hasViewportChild() {
+    var hasViewportChild = false;
+    void recurseVisitChildren(RenderObject child) {
+      if (child is RenderViewportBase) {
+        hasViewportChild = true;
+      } else {
+        child.visitChildren(recurseVisitChildren);
+      }
+    }
+
+    child.visitChildren(recurseVisitChildren);
+
+    return hasViewportChild;
   }
 }

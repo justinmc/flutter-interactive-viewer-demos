@@ -45,12 +45,7 @@ class _RotatePageState extends State<RotatePage> {
               },
               child: InteractiveViewer(
                 transformationController: _transformationController,
-                boundaryMargin: const EdgeInsets.all(0),
-                minScale: 0.0001,
-                maxScale: 10000,
-                onInteractionUpdate: (ScaleUpdateDetails details) {
-                  //print('justin onInteractionUpdate ${details.scale}');
-                },
+                boundaryMargin: const EdgeInsets.all(0.0),
                 child: Container(color: Colors.black, child: getFlex()),
               ),
             ),

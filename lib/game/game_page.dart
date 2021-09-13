@@ -149,7 +149,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               onTapUp: _onTapUp,
               child: InteractiveViewer(
                 onInteractionUpdate: (ScaleUpdateDetails details) {
-                  //print('justin onInteractionUpdate ${details.scale}');
+                  print('justin onInteractionUpdate ${details.delta}');
                 },
                 transformationController: _transformationController,
                 //boundaryMargin: EdgeInsets.all(500.0),
